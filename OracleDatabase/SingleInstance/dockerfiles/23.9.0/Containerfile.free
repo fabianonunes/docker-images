@@ -18,7 +18,7 @@
 #
 # Pull base image
 # ---------------
-FROM oraclelinux:8 as base
+FROM oraclelinux:8 AS base
 
 # Labels
 # ------
@@ -52,6 +52,7 @@ ENV ORACLE_BASE=/opt/oracle \
     CONFIG_TCPS_FILE="configTcps.sh" \
     INSTALL_DIR="$HOME/install" \
     ORACLE_DOCKER_INSTALL="true" \
+    ENABLE_ARCHIVELOG="false" \
     CHECKPOINT_FILE_EXTN=".created" 
 
 # Use second ENV so that variable get substituted
@@ -73,7 +74,8 @@ RUN mkdir -p "$ORACLE_BASE" && \
     chown -R oracle:oinstall "$ORACLE_BASE" /home/oracle && \
     sed -i -r 's/(^session\s+include\s+system-auth)/# \1/' /etc/pam.d/su && \
     mv "$CONF_FILE" /etc/sysconfig/ && \
-    rm -rf "$INSTALL_DIR"
+    rm -rf "$INSTALL_DIR" && \
+    rm -rf /var/cache/dnf
     
      
 #############################################
